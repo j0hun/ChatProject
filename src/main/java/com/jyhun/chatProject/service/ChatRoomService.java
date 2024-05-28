@@ -2,6 +2,7 @@ package com.jyhun.chatProject.service;
 
 import com.jyhun.chatProject.dto.ChatRoomDTO;
 import com.jyhun.chatProject.entity.ChatRoom;
+import com.jyhun.chatProject.entity.Member;
 import com.jyhun.chatProject.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.List;
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
+    private final MemberService memberService;
 
     @Transactional(readOnly = true)
     public List<ChatRoom> findChatRoomList(){
@@ -26,8 +28,10 @@ public class ChatRoomService {
         return chatRoomRepository.findById(roomId).orElse(null);
     }
 
-    public void addChatRoom(ChatRoomDTO chatRoomDTO) {
+    public void addChatRoom(ChatRoomDTO chatRoomDTO, String email) {
         ChatRoom chatRoom = chatRoomDTO.toEntity();
+        Member member = memberService.findMemberByEmail(email);
+        chatRoom.changeMember(member);
         chatRoomRepository.save(chatRoom);
     }
 

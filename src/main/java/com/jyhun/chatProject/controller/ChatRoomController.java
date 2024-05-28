@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -25,13 +26,14 @@ public class ChatRoomController {
     public String viewRoom(Model model) {
         List<ChatRoom> chatRoomList = chatRoomService.findChatRoomList();
         model.addAttribute("rooms",chatRoomList);
-        return "room";
+        return "chat/room";
     }
 
     @PostMapping("/chat/room")
     @ResponseBody
-    public ResponseEntity<Void> postRoom(@RequestBody ChatRoomDTO chatRoomDTO) {
-        chatRoomService.addChatRoom(chatRoomDTO);
+    public ResponseEntity<Void> postRoom(@RequestBody ChatRoomDTO chatRoomDTO, Principal principal) {
+        String email = principal.getName();
+        chatRoomService.addChatRoom(chatRoomDTO,email);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

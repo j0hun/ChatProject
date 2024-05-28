@@ -1,0 +1,86 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    max-width: 800px;
+    margin: 50px auto;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+}
+
+#title_room {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin: 0;
+}
+
+#chatting {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ddd;
+}
+
+#yourMsg {
+    padding: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.inputTable {
+    width: 100%;
+}
+
+.inputTable th {
+    text-align: left;
+    vertical-align: middle;
+}
+
+.inputTable input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-right: 10px;
+}
+
+.inputTable button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.inputTable button:hover {
+    background-color: #45a049;
+}
+
+.me {
+
+    background-color: #dcf8c6;
+    padding: 10px;
+
+
+    max-width: 60%;
+
+}
+
+.other {
+    background-color: #f1f0f0;
+    padding: 10px;
+    max-width: 60%;
+    margin-left:auto;
+
+}

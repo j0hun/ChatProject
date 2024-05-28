@@ -1,9 +1,6 @@
 package com.jyhun.chatProject.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +12,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatRoom {
+public class ChatRoom extends BaseEntity{
 
     @Id
     @GeneratedValue
@@ -26,7 +23,18 @@ public class ChatRoom {
     @OneToMany(mappedBy = "chatRoom")
     private List<ChatMessage> chatMessageList = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "Member_ID")
+    private Member member;
+
     public ChatRoom(String roomName) {
         this.roomName = roomName;
+    }
+
+    public void changeMember(Member member) {
+        this.member = member;
+        if (member != null) {
+            member.getChatRoomList().add(this);
+        }
     }
 }
