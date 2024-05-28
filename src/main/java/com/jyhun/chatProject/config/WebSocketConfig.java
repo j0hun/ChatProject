@@ -1,4 +1,4 @@
-package com.jyhun.chatProject.chat;
+package com.jyhun.chatProject.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -12,13 +12,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
-        config.setApplicationDestinationPrefixes("/app");
+        // /pub 으로 시작하는 stomp 메세지의 경로는 @controller @MessageMapping 메서드로 라우팅
+        config.setApplicationDestinationPrefixes("/pub");
+
+        // /sub 로 시작하는 stomp 메세지는 브로커로 라우팅함
+        config.enableSimpleBroker("/sub");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/chat")
+        registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }

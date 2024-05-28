@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div>
+    <div class="container my-5">
+
+        <table class="table">
+            <thead class="table-dark">
+            <tr>
+                <th>채팅방명</th>
+                <th>개설일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="room : ${rooms}">
+                <td><a th:href="@{/chat/room/{id}(id=${room.id})}" th:text="${room.roomName}"></a></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+</html>
