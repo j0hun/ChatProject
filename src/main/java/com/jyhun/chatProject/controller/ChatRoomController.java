@@ -3,8 +3,8 @@ package com.jyhun.chatProject.controller;
 import com.jyhun.chatProject.dto.ChatRoomDTO;
 import com.jyhun.chatProject.entity.ChatRoom;
 import com.jyhun.chatProject.entity.Member;
+import com.jyhun.chatProject.repository.MemberRepository;
 import com.jyhun.chatProject.service.ChatRoomService;
-import com.jyhun.chatProject.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ import java.util.List;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @GetMapping("/chat/room")
     public String viewRoom(Model model) {
@@ -45,7 +45,7 @@ public class ChatRoomController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             String email = authentication.getName();
-            Member member = memberService.findMemberByEmail(email);
+            Member member = memberRepository.findByEmail(email);
             model.addAttribute("member", member);
         }else{
             model.addAttribute("member",null);

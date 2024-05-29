@@ -1,17 +1,22 @@
 package com.jyhun.chatProject.dto;
 
+import com.jyhun.chatProject.constant.MessageType;
 import com.jyhun.chatProject.entity.ChatMessage;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class ChatMessageDTO {
 
-    private String name;
-    private String content;
+    private Long sender;
+    private Long receiver;
+    private String message;
+    private MessageType type;
 
     public ChatMessage toEntity() {
-        return new ChatMessage(content);
+        return new ChatMessage(message);
     }
 }

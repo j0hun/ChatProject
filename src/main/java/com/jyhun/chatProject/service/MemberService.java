@@ -1,6 +1,7 @@
 package com.jyhun.chatProject.service;
 
 import com.jyhun.chatProject.dto.MemberRequestDTO;
+import com.jyhun.chatProject.dto.MemberResponseDTO;
 import com.jyhun.chatProject.entity.Member;
 import com.jyhun.chatProject.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +18,15 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public Member findMemberByEmail(String email){
-        Member member = memberRepository.findByEmail(email);
-        return member;
+    public MemberResponseDTO findMemberById(Long id){
+        Member member = memberRepository.findById(id).orElse(null);
+        return MemberResponseDTO.toDTO(member);
     }
 
     @Transactional(readOnly = true)
-    public Member findMemberByName(String name){
-        Member member = memberRepository.findByName(name);
-        return member;
+    public MemberResponseDTO findMemberByEmail(String email){
+        Member member = memberRepository.findByEmail(email);
+        return MemberResponseDTO.toDTO(member);
     }
 
     public void addMember(MemberRequestDTO memberRequestDTO) {

@@ -1,12 +1,10 @@
 package com.jyhun.chatProject.controller;
 
 import com.jyhun.chatProject.dto.ChatMessageDTO;
-import com.jyhun.chatProject.entity.Member;
 import com.jyhun.chatProject.service.ChatMessageService;
 import com.jyhun.chatProject.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -22,15 +20,32 @@ public class ChatMessageController {
     private final MemberService memberService;
 
     // /pub
-    @MessageMapping("/{chatRoomId}")
-    public void identifiedChat(@DestinationVariable Long chatRoomId, @Payload ChatMessageDTO chatMessageDTO) {
-        String name = chatMessageDTO.getName();
-        Member member = memberService.findMemberByName(name);
-        String destination = "/sub/" + chatRoomId;
-        chatMessageService.addChatMessage(chatMessageDTO, chatRoomId, member.getEmail());
+    @MessageMapping("/send/room")
+    public void identifiedChat(@Payload ChatMessageDTO chatMessageDTO) {
         log.info(chatMessageDTO.toString());
+        Long memberId = chatMessageDTO.getSender();
+        Long chatRoomId = chatMessageDTO.getReceiver();
+        chatMessageService.addChatMessage(chatMessageDTO, chatRoomId, memberId);
+        String destination = "/sub/" + chatRoomId;
         simpMessagingTemplate.convertAndSend(destination, chatMessageDTO);
     }
 
+    @MessageMapping("/enterMember")
+    public void enterMember(@Payload ChatMessageDTO chatMessageDTO){
+        log.info(chatMessageDTO.toString());
+        Long chatRoomId = chatMessageDTO.getReceiver();
+        String destination = "/sub/" + chatRoomId;
+        chatMessageDTO.setMessage("입장하셨습니다.");
+        simpMessagingTemplate.convertAndSend(destination, chatMessageDTO);
+    }
+
+    @MessageMapping("/leaveMember")
+    public void leaveMember(@Payload ChatMessageDTO chatMessageDTO){
+        log.info(chatMessageDTO.toString());
+        Long chatRoomId = chatMessageDTO.getReceiver();
+        String destination = "/sub/" + chatRoomId;
+        chatMessageDTO.setMessage("퇴장하셨습니다.");
+        simpMessagingTemplate.convertAndSend(destination, chatMessageDTO);
+    }
 
 }

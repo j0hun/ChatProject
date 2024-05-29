@@ -1,12 +1,11 @@
 package com.jyhun.chatProject.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatMessage extends BaseEntity {
@@ -15,18 +14,18 @@ public class ChatMessage extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    private String content;
+    private String message;
 
     @ManyToOne
-    @JoinColumn(name = "Member_ID")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "ChatRoom_ID")
+    @JoinColumn(name = "chatroom_id")
     private ChatRoom chatRoom;
 
-    public ChatMessage(String content) {
-        this.content = content;
+    public ChatMessage(String message) {
+        this.message = message;
     }
 
     public void changeMember(Member member){

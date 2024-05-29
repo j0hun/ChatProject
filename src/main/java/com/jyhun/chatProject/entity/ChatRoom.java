@@ -24,7 +24,7 @@ public class ChatRoom extends BaseEntity{
     private List<ChatMessage> chatMessageList = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "Member_ID")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     public ChatRoom(String roomName) {
