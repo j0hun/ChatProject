@@ -2,16 +2,17 @@ package com.jyhun.chatProject.controller;
 
 import com.jyhun.chatProject.dto.ChatRoomDTO;
 import com.jyhun.chatProject.entity.ChatRoom;
+import com.jyhun.chatProject.entity.Member;
 import com.jyhun.chatProject.service.ChatRoomService;
+import com.jyhun.chatProject.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
+    private final MemberService memberService;
 
     @GetMapping("/chat/room")
     public String viewRoom(Model model) {
@@ -35,6 +37,20 @@ public class ChatRoomController {
         String email = principal.getName();
         chatRoomService.addChatRoom(chatRoomDTO,email);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/chat/room/{roomId}")
+    public String viewChat(@PathVariable Long roomId, Model model) {
+        model.addAttribute("roomId", roomId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            String email = authentication.getName();
+            Member member = memberService.findMemberByEmail(email);
+            model.addAttribute("member", member);
+        }else{
+            model.addAttribute("member",null);
+        }
+        return "chat/chat";
     }
 
 }
