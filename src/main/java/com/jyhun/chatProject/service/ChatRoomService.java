@@ -26,7 +26,7 @@ public class ChatRoomService {
 
     public void addChatRoom(ChatRoomDTO chatRoomDTO, String email) {
         ChatRoom chatRoom = chatRoomDTO.toEntity();
-        Member member = memberRepository.findByEmail(email);
+        Member member = memberRepository.findByEmail(email).orElse(null);
         chatRoom.changeMember(member);
         chatRoomRepository.save(chatRoom);
     }

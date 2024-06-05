@@ -1,55 +1,64 @@
 package com.jyhun.chatProject.controller;
 
-import com.jyhun.chatProject.dto.MemberRequestDTO;
+import com.jyhun.chatProject.dto.LoginDTO;
+import com.jyhun.chatProject.dto.MemberResponseDTO;
+import com.jyhun.chatProject.dto.RegisterDTO;
+import com.jyhun.chatProject.dto.TokenDTO;
+import com.jyhun.chatProject.service.LoginService;
 import com.jyhun.chatProject.service.MemberService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/members")
-@Controller
+@Slf4j
+@RestController
 @RequiredArgsConstructor
 public class LoginController {
 
     private final MemberService memberService;
+    private final LoginService loginService;
+    @Value("${jwt.header}")
+    private String header;
 
-    @GetMapping("/signup")
-    public String signupView(Model model) {
-        model.addAttribute("member", new MemberRequestDTO());
-        return "member/signup";
+    @PostMapping("/register")
+    public ResponseEntity<Void> register(@RequestBody RegisterDTO registerDTO){
+        loginService.register(registerDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/signup")
-    public String signup(@Valid MemberRequestDTO memberRequestDTO, BindingResult bindingResult, Model model) {
+    @PostMapping("/login")
+    public ResponseEntity<TokenDTO> login(@RequestBody LoginDTO loginDTO) {
+        TokenDTO token = loginService.login(loginDTO);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        // response header에 jwt token에 넣어줌
+        httpHeaders.add(header, "Bearer " + token.getToken());
 
-        if (bindingResult.hasErrors()) {
-            return "member/signup";
+        // tokenDto를 이용해 response body에도 넣어서 리턴
+        return new ResponseEntity<>(token, httpHeaders, HttpStatus.OK);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<MemberResponseDTO> getUserDetailsAfterLogin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info(authentication.getName());
+        if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken) && authentication.isAuthenticated()) {
+            // 사용자가 인증된 경우
+            MemberResponseDTO member = memberService.findMemberByEmail(authentication.getName());
+            return new ResponseEntity<>(member, HttpStatus.OK);
+        } else {
+            // 사용자가 인증되지 않은 경우
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
-        try {
-            memberService.addMember(memberRequestDTO);
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "member/signup";
-        }
-
-        return "redirect:/";
-    }
-
-    @GetMapping("/login")
-    public String loginView(){
-        return "member/login";
-    }
-
-    @GetMapping("/login/error")
-    public String loginError(Model model){
-        model.addAttribute("errorMessage","아이디 또는 비밀번호를 확인해주세요.");
-        return "member/login";
     }
 
 }

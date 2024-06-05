@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+<h2>Register</h2>
+<form id="registerForm">
+    <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+    </div>
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+    </div>
+    <button type="submit">Register</button>
+</form>
+<p id="message"></p>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var email = document.getElementById('email').value;
+        var name = document.getElementById('name').value;
+        var password = document.getElementById('password').value;
+
+        var registerData = {
+            email: email,
+            name: name,
+            password: password
+        };
+
+        fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(registerData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('message').textContent = 'Registration successful!';
+                    document.getElementById('message').style.color = 'green';
+                    document.getElementById('registerForm').reset();
+                } else {
+                    throw new Error('Registration failed');
+                }
+            })
+            .catch(error => {
+                document.getElementById('message').textContent = error.message;
+                document.getElementById('message').style.color = 'red';
+            });
+    });
+</script>
+</body>
+</html>

@@ -13,6 +13,7 @@ var memberId = document.querySelector("#memberId").value;
 var roomId = document.querySelector("#roomId").value;
 
 var member = null;
+// id가 memberId인 member
 findMemberById(memberId);
 
 function connect() {
@@ -50,11 +51,10 @@ function showMessage(e) {
     var data = JSON.parse(e .body);
     var chatting = document.getElementById('chatting');
     var p = document.createElement('p');
-    var name = member.name;
 
     if (data.type === 'ENTER' || data.type === 'LEAVE') {
         p.className = 'event';
-        p.textContent = name + " 님이 " + data.message;
+        p.textContent = member.name + " 님이 " + data.message;
     }
     else {
         if (data.sender == memberId) {
@@ -62,7 +62,7 @@ function showMessage(e) {
         } else {
             p.className = 'other';
         }
-        p.textContent = name + " : " + data.message;
+        p.textContent = member.name + " : " + data.message;
     }
     chatting.appendChild(p);
 
@@ -119,5 +119,6 @@ function findMemberById(id){
 
 connect();
 // 이벤트 리스너 추가
+messageInput.onkeypress = e => e.key === 'Enter' && send();
 sendBtn.addEventListener('click', send);
 leaveBtn.addEventListener('click',leave);

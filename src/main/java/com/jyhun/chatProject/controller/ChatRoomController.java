@@ -45,7 +45,7 @@ public class ChatRoomController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             String email = authentication.getName();
-            Member member = memberRepository.findByEmail(email);
+            Member member = memberRepository.findByEmail(email).orElse(null);
             model.addAttribute("member", member);
         }else{
             model.addAttribute("member",null);

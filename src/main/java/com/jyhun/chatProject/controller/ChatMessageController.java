@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -28,6 +29,12 @@ public class ChatMessageController {
         chatMessageService.addChatMessage(chatMessageDTO, chatRoomId, memberId);
         String destination = "/sub/" + chatRoomId;
         simpMessagingTemplate.convertAndSend(destination, chatMessageDTO);
+    }
+
+    @MessageMapping("/example") // 클라이언트가 /app/example로 메시지 전송
+    @SendTo("/sub/messages")  // 서버가 /topic/messages로 메시지 전달
+    public String example(String str) {
+        return "success";
     }
 
     @MessageMapping("/enterMember")

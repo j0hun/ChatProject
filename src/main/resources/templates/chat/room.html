@@ -2,10 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{fragments/layout}">
-<head>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-</head>
 <div layout:fragment="content">
     <div class="container my-5">
 
@@ -68,11 +64,18 @@
                 return false;
             }
 
+            // CSRF 토큰 설정
+            let csrfToken = $("meta[name='_csrf']").attr("content");
+            let csrfHeader = $("meta[name='_csrf_header']").attr("content");
+
             $.ajax({
                 type: "POST",
                 url: "/chat/room",
                 contentType: "application/json",
-                data: JSON.stringify({ roomName: name }),
+                data: JSON.stringify({roomName: name}),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                },
                 success: function (data, textStatus, jqXHR) {
                     if (jqXHR.status === 201) {
                         alert('채팅방이 생성되었습니다.');
@@ -86,7 +89,6 @@
                     console.error('Error details:', jqXHR.responseText);
                 }
             });
-
 
         }
     </script>
