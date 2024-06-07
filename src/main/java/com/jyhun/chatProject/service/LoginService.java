@@ -1,17 +1,10 @@
 package com.jyhun.chatProject.service;
 
-import com.jyhun.chatProject.config.JwtProvider;
-import com.jyhun.chatProject.dto.LoginDTO;
 import com.jyhun.chatProject.dto.RegisterDTO;
-import com.jyhun.chatProject.dto.TokenDTO;
 import com.jyhun.chatProject.entity.Member;
 import com.jyhun.chatProject.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,8 +18,6 @@ public class LoginService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtProvider jwtProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     public void register(RegisterDTO registerDTO) {
         Member findMember = memberRepository.findByEmail(registerDTO.getEmail()).orElseThrow(() -> new BadCredentialsException("잘못된 계정 정보입니다."));
@@ -36,15 +27,6 @@ public class LoginService implements UserDetailsService {
         registerDTO.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
         Member member = registerDTO.toEntity();
         memberRepository.save(member);
-    }
-
-    public TokenDTO login(LoginDTO loginDTO) {
-        memberRepository.findByEmail(loginDTO.getEmail());
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(),loginDTO.getPassword());
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtProvider.createToken(authentication);
-        return new TokenDTO(token);
     }
 
     @Override

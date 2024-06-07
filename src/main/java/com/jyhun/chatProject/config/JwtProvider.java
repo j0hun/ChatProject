@@ -2,17 +2,13 @@ package com.jyhun.chatProject.config;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SecurityException;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
@@ -40,23 +36,24 @@ public class JwtProvider {
         Date now = new Date();
 
         return Jwts.builder()
-                .issuer(authentication.getName())
-                .subject("JWT Token")
+                .setIssuer(authentication.getName())
+                .setSubject("JWT Token")
                 .claim("username", authentication.getName())
-                .issuedAt(now)
-                .signWith(key)
-                .expiration(new Date(now.getTime() + 1000L * 60 * 60)) // 만료시간 : 1시간
+                .setIssuedAt(now)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .setExpiration(new Date(now.getTime() + 10000000L * 60 * 60)) // 만료시간 : 1시간
                 .compact();
 
     }
 
     // 토큰으로 클레임을 만들고 이를 이용해 유저 객체를 만들어서 최종적으로 authentication 객체를 리턴
     public Authentication getAuthentication(String token) {
-        Claims claims = Jwts.parser()
-                .verifyWith((SecretKey) key)
+        Claims claims = Jwts
+                .parserBuilder()
+                .setSigningKey(key)
                 .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                .parseClaimsJws(token)
+                .getBody();
 
         String username = String.valueOf(claims.get("username"));
         return new UsernamePasswordAuthenticationToken(username, token);
@@ -64,11 +61,7 @@ public class JwtProvider {
     // 토큰의 유효성 검증을 수행
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .verifyWith((SecretKey) key)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
 
@@ -84,16 +77,6 @@ public class JwtProvider {
             log.info("JWT 토큰이 잘못되었습니다.");
         }
         return false;
-    }
-
-    // Request Header 에서 토큰 정보를 꺼내오기 위한 메소드
-    public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(header);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        log.info(bearerToken);
-        return null;
     }
 
 }
