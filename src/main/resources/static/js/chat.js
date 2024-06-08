@@ -9,12 +9,12 @@ var leaveBtn = document.querySelector("#leaveBtn");
 
 var stompClient = null;
 
-var memberId = document.querySelector("#memberId").value;
+var memberEmail = document.querySelector("#memberEmail").value;
 var roomId = document.querySelector("#roomId").value;
 
 var member = null;
 // id가 memberId인 member
-findMemberById(memberId);
+findMemberByEmail(memberEmail);
 
 function connect() {
 
@@ -97,10 +97,10 @@ function leave(){
     window.location.href='/chat/room';
 }
 
-function findMemberById(id){
+function findMemberByEmail(email){
     // jQuery를 사용한 Ajax 요청
     $.ajax({
-        url: "/member/" + id, // 멤버 ID를 경로에 포함
+        url: "/api/member/" + email,
         type: "GET",
         success: function(data) {
             // 요청이 성공적으로 처리된 경우 실행될 콜백 함수

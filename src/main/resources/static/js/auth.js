@@ -1,5 +1,3 @@
-var logout = document.querySelector("#logoutLink");
-
 $(document).ready(function () {
     // 사용자 정보를 가져오는 API 호출
     $.ajax({
@@ -9,7 +7,7 @@ $(document).ready(function () {
             "Authorization": "Bearer " + sessionStorage.getItem('token') // 로컬 스토리지에서 토큰을 가져와 헤더에 추가
         },
         success: function (response) {
-            alert('Welcome, ' + response.name); // 사용자의 이름을 환영 메시지로 표시
+            console.log(response);
             if (response) {
                 // 사용자가 인증된 경우
                 $('#logoutLink').show();

@@ -2,95 +2,56 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Rooms</title>
+    <script src="/js/room.js"></script>
+</head>
+<body>
 <div layout:fragment="content">
     <div class="container my-5">
-
         <table class="table">
             <thead class="table-dark">
             <tr>
                 <th>채팅방명</th>
             </tr>
             </thead>
-            <tbody>
-            <tr th:each="room : ${rooms}">
-                <td><a th:href="@{/chat/room/{id}(id=${room.id})}" th:text="${room.roomName}"></a></td>
-            </tr>
+            <tbody id="chatRoomsContainer">
+            <!-- 채팅방 목록이 AJAX로 동적으로 추가됩니다. -->
             </tbody>
         </table>
-        <div class="container">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createRoomModal">
-                채팅방 생성
-            </button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createRoomModal">
+            채팅방 생성
+        </button>
 
-            <!-- Modal -->
-            <div class="modal fade" id="createRoomModal" tabindex="-1" role="dialog"
-                 aria-labelledby="createRoomModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="createRoomModalLabel">채팅방 생성</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="createRoomForm">
-                                <div class="form-group">
-                                    <label for="roomName">채팅방 이름</label>
-                                    <input type="text" class="form-control" id="roomName" name="roomName" required>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="createRoom()">생성</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="createRoomModal" tabindex="-1" role="dialog"
+             aria-labelledby="createRoomModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createRoomModalLabel">채팅방 생성</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="createRoomForm">
+                            <div class="form-group">
+                                <label for="roomName">채팅방 이름</label>
+                                <input type="text" class="form-control" id="roomName" name="roomName" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="createRoomButton">생성</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
-    <script th:inline="javascript">
-        function createRoom() {
-            let name = $("#roomName").val();
-
-            if (name === "") {
-                alert("방 이름은 필수입니다")
-                return false;
-            }
-            if ($("#" + name).length > 0) {
-                alert("이미 존재하는 방입니다")
-                return false;
-            }
-
-            // CSRF 토큰 설정
-            let csrfToken = $("meta[name='_csrf']").attr("content");
-            let csrfHeader = $("meta[name='_csrf_header']").attr("content");
-
-            $.ajax({
-                type: "POST",
-                url: "/chat/room",
-                contentType: "application/json",
-                data: JSON.stringify({roomName: name}),
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader(csrfHeader, csrfToken);
-                },
-                success: function (data, textStatus, jqXHR) {
-                    if (jqXHR.status === 201) {
-                        alert('채팅방이 생성되었습니다.');
-                        location.reload();
-                    } else {
-                        alert('채팅방 생성에 실패했습니다.');
-                    }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert('채팅방 생성 중에 오류가 발생했습니다: ' + jqXHR.status + ' ' + errorThrown);
-                    console.error('Error details:', jqXHR.responseText);
-                }
-            });
-
-        }
-    </script>
 </div>
+</body>
 </html>

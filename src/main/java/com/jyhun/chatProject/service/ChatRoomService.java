@@ -1,6 +1,7 @@
 package com.jyhun.chatProject.service;
 
-import com.jyhun.chatProject.dto.ChatRoomDTO;
+import com.jyhun.chatProject.dto.ChatRoomRequestDTO;
+import com.jyhun.chatProject.dto.ChatRoomResponseDTO;
 import com.jyhun.chatProject.entity.ChatRoom;
 import com.jyhun.chatProject.entity.Member;
 import com.jyhun.chatProject.repository.ChatRoomRepository;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,15 +22,33 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
-    public List<ChatRoom> findChatRoomList(){
-        return chatRoomRepository.findAll();
+    public List<ChatRoomResponseDTO> findChatRoomList() {
+        List<ChatRoom> chatRoomList = chatRoomRepository.findAll();
+        List<ChatRoomResponseDTO> chatRoomResponseDTOList = new ArrayList<>();
+        for (ChatRoom chatRoom : chatRoomList) {
+            ChatRoomResponseDTO chatRoomResponseDTO = ChatRoomResponseDTO.toDTO(chatRoom);
+            Member findMember = memberRepository.findByChatRoomId(chatRoom.getId());
+            chatRoomResponseDTO.setMemberName(findMember.getName());
+            chatRoomResponseDTOList.add(chatRoomResponseDTO);
+        }
+        return chatRoomResponseDTOList;
     }
 
-    public void addChatRoom(ChatRoomDTO chatRoomDTO, String email) {
-        ChatRoom chatRoom = chatRoomDTO.toEntity();
+    @Transactional(readOnly = true)
+    public ChatRoomResponseDTO findChatRoom(Long id) {
+        ChatRoom chatRoom = chatRoomRepository.findById(id).orElse(null);
+        ChatRoomResponseDTO chatRoomResponseDTO = ChatRoomResponseDTO.toDTO(chatRoom);
+        Member findMember = memberRepository.findByChatRoomId(id);
+        chatRoomResponseDTO.setMemberName(findMember.getName());
+        return chatRoomResponseDTO;
+    }
+
+    public void addChatRoom(ChatRoomRequestDTO chatRoomRequestDTO, String email) {
+        ChatRoom chatRoom = chatRoomRequestDTO.toEntity();
         Member member = memberRepository.findByEmail(email).orElse(null);
         chatRoom.changeMember(member);
         chatRoomRepository.save(chatRoom);
     }
+
 
 }

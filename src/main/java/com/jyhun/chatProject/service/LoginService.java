@@ -4,7 +4,6 @@ import com.jyhun.chatProject.dto.RegisterDTO;
 import com.jyhun.chatProject.entity.Member;
 import com.jyhun.chatProject.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,12 +19,16 @@ public class LoginService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     public void register(RegisterDTO registerDTO) {
-        Member findMember = memberRepository.findByEmail(registerDTO.getEmail()).orElseThrow(() -> new BadCredentialsException("잘못된 계정 정보입니다."));
-        if (findMember != null) {
-            throw new IllegalArgumentException("이미 가입된 회원입니다.");
+        // 이메일로 이미 등록된 회원이 있는지 확인
+        if (memberRepository.findByEmail(registerDTO.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 회원입니다.");
         }
+
         registerDTO.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
+
         Member member = registerDTO.toEntity();
+
+        // 회원 정보 저장
         memberRepository.save(member);
     }
 
