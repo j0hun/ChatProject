@@ -22,7 +22,7 @@ public class JwtFilter extends GenericFilterBean {
 
     private final JwtProvider jwtProvider;
 
-    // 실제 필터릴 로직
+    // 실제 필터링 로직
     // 토큰의 인증정보를 SecurityContext에 저장하는 역할 수행
 
     @Override

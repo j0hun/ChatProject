@@ -11,7 +11,7 @@ import lombok.*;
 public class Chat {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String message;
@@ -21,8 +21,8 @@ public class Chat {
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "chatroom_id")
-    private Room chatRoom;
+    @JoinColumn(name = "room_id")
+    private Room room;
 
     public Chat(String message) {
         this.message = message;
@@ -31,14 +31,14 @@ public class Chat {
     public void changeMember(Member member){
         this.member = member;
         if (member != null){
-            member.getChatMessageList().add(this);
+            member.getChatList().add(this);
         }
     }
 
-    public void changeRoom(Room chatRoom){
-        this.chatRoom = chatRoom;
-        if (chatRoom != null){
-            chatRoom.getChatList().add(this);
+    public void changeRoom(Room room){
+        this.room = room;
+        if (room != null){
+            room.getChatList().add(this);
         }
     }
 

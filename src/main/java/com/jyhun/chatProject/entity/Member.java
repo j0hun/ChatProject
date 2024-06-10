@@ -2,10 +2,7 @@ package com.jyhun.chatProject.entity;
 
 import com.jyhun.chatProject.constant.Role;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +10,11 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String name;
@@ -29,10 +27,10 @@ public class Member {
     private Role role;
 
     @OneToMany(mappedBy = "member")
-    private List<Chat> chatMessageList = new ArrayList<>();
+    private List<Chat> chatList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<MemberRoom> memberChatRoomList = new ArrayList<>();
+    private List<MemberRoom> memberRoomList = new ArrayList<>();
 
     @Builder
     public Member(String name, String email, String password,Role role) {
@@ -42,4 +40,11 @@ public class Member {
         this.role = role;
     }
 
+    public void addMember(MemberRoom memberRoom){
+        this.memberRoomList.add(memberRoom);
+    }
+
+    public void removeMember(MemberRoom memberRoom) {
+        this.memberRoomList.remove(memberRoom);
+    }
 }

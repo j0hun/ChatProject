@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class MemberRoom {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne
@@ -20,7 +20,16 @@ public class MemberRoom {
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "chatroom_id")
-    private Room chatRoom;
+    @JoinColumn(name = "room_id")
+    private Room room;
 
+    public void enterRoom(Member member, Room room) {
+        member.addMember(this);
+        room.addRoom(this);
+    }
+
+    public void leaveRoom(Member member) {
+        this.member = member;
+        member.removeMember(this);
+    }
 }

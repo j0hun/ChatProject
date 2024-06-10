@@ -15,18 +15,22 @@ import java.util.List;
 public class Room {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String roomName;
 
-    @OneToMany(mappedBy = "chatRoom")
+    @OneToMany(mappedBy = "room")
     private List<Chat> chatList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "chatRoom")
+    @OneToMany(mappedBy = "room")
     private List<MemberRoom> memberRoomList = new ArrayList<>();
 
     public Room(String roomName) {
         this.roomName = roomName;
+    }
+
+    public void addRoom(MemberRoom memberRoom) {
+        this.memberRoomList.add(memberRoom);
     }
 }

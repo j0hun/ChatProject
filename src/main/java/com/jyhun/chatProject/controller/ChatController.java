@@ -2,7 +2,7 @@ package com.jyhun.chatProject.controller;
 
 import com.jyhun.chatProject.dto.ChatDTO;
 import com.jyhun.chatProject.service.ChatService;
-import com.jyhun.chatProject.service.MemberService;
+import com.jyhun.chatProject.service.MemberRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,11 +17,11 @@ public class ChatController {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatService chatService;
-    private final MemberService memberService;
+    private final MemberRoomService memberRoomService;
 
     // /pub
     @MessageMapping("/send/room")
-    public void identifiedChat(@Payload ChatDTO chatDTO) {
+    public void sendChat(@Payload ChatDTO chatDTO) {
         log.info(chatDTO.toString());
         Long memberId = chatDTO.getSender();
         Long roomId = chatDTO.getReceiver();
@@ -35,6 +35,7 @@ public class ChatController {
         log.info(chatDTO.toString());
         Long roomId = chatDTO.getReceiver();
         String destination = "/sub/" + roomId;
+        memberRoomService.enter(chatDTO.getSender(),chatDTO.getReceiver());
         chatDTO.setMessage("입장하셨습니다.");
         simpMessagingTemplate.convertAndSend(destination, chatDTO);
     }
@@ -44,6 +45,7 @@ public class ChatController {
         log.info(chatDTO.toString());
         Long roomId = chatDTO.getReceiver();
         String destination = "/sub/" + roomId;
+        memberRoomService.leave(chatDTO.getSender(), chatDTO.getReceiver());
         chatDTO.setMessage("퇴장하셨습니다.");
         simpMessagingTemplate.convertAndSend(destination, chatDTO);
     }

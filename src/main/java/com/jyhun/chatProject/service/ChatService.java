@@ -22,10 +22,10 @@ public class ChatService {
 
     @Transactional
     public void addChat(ChatDTO chatDTO, Long roomId, Long memberId) {
-        Room chatRoom = roomRepository.findById(roomId).orElse(null);
+        Room room = roomRepository.findById(roomId).orElse(null);
         Member member = memberRepository.findById(memberId).orElse(null);
         Chat chat = chatDTO.toEntity();
-        chat.changeRoom(chatRoom);
+        chat.changeRoom(room);
         chat.changeMember(member);
         chatRepository.save(chat);
     }
