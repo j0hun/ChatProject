@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatMessage extends BaseEntity {
+public class Chat {
 
     @Id
     @GeneratedValue
@@ -22,9 +22,9 @@ public class ChatMessage extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "chatroom_id")
-    private ChatRoom chatRoom;
+    private Room chatRoom;
 
-    public ChatMessage(String message) {
+    public Chat(String message) {
         this.message = message;
     }
 
@@ -35,10 +35,10 @@ public class ChatMessage extends BaseEntity {
         }
     }
 
-    public void changeChatRoom(ChatRoom chatRoom){
+    public void changeRoom(Room chatRoom){
         this.chatRoom = chatRoom;
         if (chatRoom != null){
-            chatRoom.getChatMessageList().add(this);
+            chatRoom.getChatList().add(this);
         }
     }
 

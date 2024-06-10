@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseTimeEntity {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,10 +29,10 @@ public class Member extends BaseTimeEntity {
     private Role role;
 
     @OneToMany(mappedBy = "member")
-    private List<ChatMessage> chatMessageList = new ArrayList<>();
+    private List<Chat> chatMessageList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<ChatRoom> chatRoomList = new ArrayList<>();
+    private List<MemberRoom> memberChatRoomList = new ArrayList<>();
 
     @Builder
     public Member(String name, String email, String password,Role role) {

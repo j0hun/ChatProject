@@ -1,9 +1,9 @@
 package com.jyhun.chatProject;
 
 import com.jyhun.chatProject.constant.Role;
-import com.jyhun.chatProject.entity.ChatRoom;
+import com.jyhun.chatProject.entity.Room;
 import com.jyhun.chatProject.entity.Member;
-import com.jyhun.chatProject.repository.ChatRoomRepository;
+import com.jyhun.chatProject.repository.RoomRepository;
 import com.jyhun.chatProject.repository.MemberRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -27,14 +27,14 @@ public class DataInit {
     @RequiredArgsConstructor
     static class InitService {
 
-        private final ChatRoomRepository chatRoomRepository;
+        private final RoomRepository chatRoomRepository;
         private final MemberRepository memberRepository;
         private final PasswordEncoder passwordEncoder;
 
         public void dbInit() {
             Member member = new Member("admin","admin@admin.com",passwordEncoder.encode("admin@admin.com"), Role.ADMIN);
-            ChatRoom chatRoom = new ChatRoom("roomName1");
-            chatRoom.changeMember(member);
+            Room chatRoom = new Room("roomName1");
+//            chatRoom.changeMember(member);
             memberRepository.save(member);
             chatRoomRepository.save(chatRoom);
 //            for(int i=1;i<=100;i++){

@@ -1,6 +1,6 @@
 package com.jyhun.chatProject.dto;
 
-import com.jyhun.chatProject.entity.ChatRoom;
+import com.jyhun.chatProject.entity.Room;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ChatRoomResponseDTO {
+public class RoomResponseDTO {
 
     private Long id;
 
@@ -16,11 +16,11 @@ public class ChatRoomResponseDTO {
 
     private String memberName;
 
-    public static ChatRoomResponseDTO toDTO(ChatRoom chatRoom){
-        return new ChatRoomResponseDTO(chatRoom.getId(),chatRoom.getRoomName());
+    public static RoomResponseDTO toDTO(Room room){
+        return new RoomResponseDTO(room.getId(),room.getRoomName());
     }
 
-    public ChatRoomResponseDTO(Long id, String roomName) {
+    public RoomResponseDTO(Long id, String roomName) {
         this.id = id;
         this.roomName = roomName;
     }

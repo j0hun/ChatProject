@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatRoom extends BaseEntity{
+public class Room {
 
     @Id
     @GeneratedValue
@@ -21,20 +21,12 @@ public class ChatRoom extends BaseEntity{
     private String roomName;
 
     @OneToMany(mappedBy = "chatRoom")
-    private List<ChatMessage> chatMessageList = new ArrayList<>();
+    private List<Chat> chatList = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @OneToMany(mappedBy = "chatRoom")
+    private List<MemberRoom> memberRoomList = new ArrayList<>();
 
-    public ChatRoom(String roomName) {
+    public Room(String roomName) {
         this.roomName = roomName;
-    }
-
-    public void changeMember(Member member) {
-        this.member = member;
-        if (member != null) {
-            member.getChatRoomList().add(this);
-        }
     }
 }
