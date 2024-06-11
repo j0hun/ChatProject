@@ -12,12 +12,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MemberResponseDTO {
 
+    private Long id;
+
     private String name;
 
     private String email;
 
     public static MemberResponseDTO toDTO(Member member){
-        return new MemberResponseDTO(member.getName(),member.getEmail());
+        return new MemberResponseDTO(member.getId(),member.getName(),member.getEmail());
     }
 
 }

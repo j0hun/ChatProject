@@ -6,11 +6,13 @@ function fetchChatRooms() {
             var chatRoomsContainer = $('#chatRoomsContainer');
             chatRoomsContainer.empty();
             if (data && data.length > 0) {
-                data.forEach(function (chatRoom) {
+                data.forEach(function (room) {
                     var chatRoomElement = $('<tr></tr>').append(
                         $('<td></td>').append(
-                            $('<a></a>').attr('href', '/chat/room/' + chatRoom.id).text(chatRoom.roomName)
-                        )
+                            $('<a></a>').attr('href', '/chat/room/' + room.id).text(room.roomName)
+                        ),
+                        $('<td></td>').text(room.memberName)
+
                     );
                     chatRoomsContainer.append(chatRoomElement);
                 });
@@ -27,7 +29,7 @@ function fetchChatRooms() {
 function createRoom(name) { // 채팅방 이름을 매개변수로 추가
     $.ajax({
         type: "POST",
-        url: "api/chat/room",
+        url: "/api/chat/room",
         contentType: "application/json",
         data: JSON.stringify({ roomName: name }), // 전달된 이름을 사용하여 요청을 보냄
         success: function (data, textStatus, jqXHR) {

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberRoom {
+public class MemberRoom extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,13 +23,19 @@ public class MemberRoom {
     @JoinColumn(name = "room_id")
     private Room room;
 
+    public MemberRoom(Member member, Room room) {
+        this.member = member;
+        this.room = room;
+    }
+
     public void enterRoom(Member member, Room room) {
-        member.addMember(this);
-        room.addRoom(this);
+        this.member = member;
+        member.getMemberRoomList().add(this);
+        this.room = room;
+        room.getMemberRoomList().add(this);
     }
 
     public void leaveRoom(Member member) {
-        this.member = member;
-        member.removeMember(this);
+        member.getMemberRoomList().remove(this);
     }
 }

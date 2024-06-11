@@ -40,11 +40,4 @@ public class Member {
         this.role = role;
     }
 
-    public void addMember(MemberRoom memberRoom){
-        this.memberRoomList.add(memberRoom);
-    }
-
-    public void removeMember(MemberRoom memberRoom) {
-        this.memberRoomList.remove(memberRoom);
-    }
 }

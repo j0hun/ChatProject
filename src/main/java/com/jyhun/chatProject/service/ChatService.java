@@ -2,14 +2,18 @@ package com.jyhun.chatProject.service;
 
 import com.jyhun.chatProject.dto.ChatDTO;
 import com.jyhun.chatProject.entity.Chat;
-import com.jyhun.chatProject.entity.Room;
 import com.jyhun.chatProject.entity.Member;
+import com.jyhun.chatProject.entity.Room;
 import com.jyhun.chatProject.repository.ChatRepository;
-import com.jyhun.chatProject.repository.RoomRepository;
 import com.jyhun.chatProject.repository.MemberRepository;
+import com.jyhun.chatProject.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,4 +34,14 @@ public class ChatService {
         chatRepository.save(chat);
     }
 
+    @Transactional(readOnly = true)
+    public List<ChatDTO> findChatListByRoomIdAndDate(Long roomId, LocalDateTime date) {
+        List<Chat> chatList = chatRepository.findByRoomIdAndDate(roomId,date);
+        List<ChatDTO> chatDTOList = new ArrayList<>();
+        for (Chat chat : chatList) {
+            ChatDTO chatDTO = ChatDTO.toDTO(chat);
+            chatDTOList.add(chatDTO);
+        }
+        return chatDTOList;
+    }
 }

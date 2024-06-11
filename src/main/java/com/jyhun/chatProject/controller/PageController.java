@@ -1,7 +1,6 @@
 package com.jyhun.chatProject.controller;
 
 import com.jyhun.chatProject.dto.LoginDTO;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +26,7 @@ public class PageController {
     }
 
     @GetMapping("/chat/room/{roomId}")
-    public String enterRoom(@PathVariable Long roomId, Model model, Authentication authentication){
-        model.addAttribute("email",authentication.getName());
+    public String enterRoom(@PathVariable Long roomId, Model model){
         model.addAttribute("roomId", roomId);
         return "chat/chat";
     }
